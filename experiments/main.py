@@ -2,38 +2,16 @@ import numpy as np
 import time
 from experiments.learners import *
 from experiments.tuned_learners import *
-# from data.NC_data_test import *
 from data.data_to_use import *
 import random
 
-data = data_cocomo_nasa_1()
+data = data_miyazaki()
 repeats = 20
-methods = 0  # "0" for MRE, "1" for SA
+# methods = 0  # "0" for MRE, "1" for SA
+metrics = 1
 
 
 if __name__ == '__main__':
-
-    # list_CART = []
-    #
-    # time1 = time.time()
-    # for i in range(repeats):
-    #     # list_CART.append(KNN(data)[0])     # MRE:0,  SA:1
-    #     list_CART.append(CART_DE(data))    # MRE/SA switch in methods/optimizers
-    #     # list_CART.append(CART_FLASH(data))
-    # run_time1 = str(time.time() - time1)
-    #
-    # flat_list = np.array(list_CART).flatten()
-    # cart0_output = sorted(flat_list.tolist())
-    #
-    # print(cart0_output)
-    # print("median for this method:", np.median(cart0_output))
-    # # print("mean for CART0:", np.mean(cart0_output))
-    # print("runtime for this method:", run_time1)
-    #
-    # with open("./output/test_sk_mre.txt", "w") as output:
-    #     # output.write("CART0" + '\n')
-    #     for i in sorted(cart0_output):
-    #         output.write(str(i)+" ")
 
     for i in range(6):
 
@@ -41,7 +19,7 @@ if __name__ == '__main__':
             list_temp = []
             time0 = time.time()
             for i in range(repeats):
-                list_temp.append(CART_DE(data))
+                list_temp.append(CART_DE(data, metrics))
             run_time0 = str(time.time() - time0)
 
             flat_list = np.array(list_temp).flatten()
@@ -60,7 +38,7 @@ if __name__ == '__main__':
             list_temp = []
             time1 = time.time()
             for i in range(repeats):
-                list_temp.append(CART_FLASH(data))
+                list_temp.append(CART_FLASH(data, metrics))
             run_time1 = str(time.time() - time1)
 
             flat_list = np.array(list_temp).flatten()
@@ -79,7 +57,7 @@ if __name__ == '__main__':
             list_temp = []
             time2 = time.time()
             for i in range(repeats):
-                list_temp.append(CART(data)[methods])
+                list_temp.append(CART(data)[metrics])
             run_time2 = str(time.time() - time2)
 
             flat_list = np.array(list_temp).flatten()
@@ -98,7 +76,7 @@ if __name__ == '__main__':
             list_temp = []
             time3 = time.time()
             for i in range(repeats):
-                list_temp.append(RF(data)[methods])
+                list_temp.append(RF(data)[metrics])
             run_time3 = str(time.time() - time3)
 
             flat_list = np.array(list_temp).flatten()
@@ -117,7 +95,7 @@ if __name__ == '__main__':
             list_temp = []
             time4 = time.time()
             for i in range(repeats):
-                list_temp.append(SVM(data)[methods])
+                list_temp.append(SVM(data)[metrics])
             run_time4 = str(time.time() - time4)
 
             flat_list = np.array(list_temp).flatten()
@@ -136,7 +114,7 @@ if __name__ == '__main__':
             list_temp = []
             time5 = time.time()
             for i in range(repeats):
-                list_temp.append(KNN(data)[methods])
+                list_temp.append(KNN(data)[metrics])
             run_time5 = str(time.time() - time5)
 
             flat_list = np.array(list_temp).flatten()

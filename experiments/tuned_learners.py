@@ -3,7 +3,7 @@ from sklearn.tree import DecisionTreeRegressor
 from experiments.optimizers import *
 
 
-def CART_DE(dataset):
+def CART_DE(dataset, metrics):
 
     dataset = normalize(dataset)
     mre_list = []
@@ -25,21 +25,24 @@ def CART_DE(dataset):
             test_actual_Y = test_actual_effort.values
             # mre_list.append(mre_calc(test_predict_Y, test_actual_Y))
             # sa_list.append(sa_calc(test_predict_Y, test_actual_Y))
-            return mre_calc(test_predict_Y, test_actual_Y)  ############# MRE
-            # return sa_calc(test_predict_Y, test_actual_Y)  ############# SA
+            if metrics == 0:
+                return mre_calc(test_predict_Y, test_actual_Y)  ############# MRE
+            elif metrics == 1:
+                return sa_calc(test_predict_Y, test_actual_Y)  ############# SA
 
-        output = de(cart_builder, bounds=[(1, 12), (0.00001, 0.5), (0.00001, 1)])
+        output = de(cart_builder, metrics, bounds=[(1, 12), (0.00001, 0.5), (0.00001, 1)])
         mre_list.append(output)  ############# MRE
-        # sa_list.append(output)  ############# SA
+        sa_list.append(output)  ############# SA
 
-    return mre_list  ############# MRE
-    # return sa_list  ############# SA
+    if metrics == 0:
+        return mre_list  ############# MRE
+    elif metrics == 1:
+        return sa_list  ############# SA
 
 
-def CART_FLASH(dataset):
+def CART_FLASH(dataset, metrics):
     dataset = normalize(dataset)
-    mre_list = []
-    sa_list = []
+    score_list = []
 
     for train, test in KFold_df(dataset, 3):
         train_input = train.iloc[:, :-1]
@@ -48,10 +51,10 @@ def CART_FLASH(dataset):
         test_actual_effort = test.iloc[:, -1]
         # max_depth: [1:12], min_samples_leaf: [1:12], min_samples_split: [2:21]
 
-        output = flash(train_input, train_actual_effort, test_input, test_actual_effort, 10)
-        mre_list.append(output)
+        output = flash(metrics, train_input, train_actual_effort, test_input, test_actual_effort, 10)
+        score_list.append(output)
 
-    return mre_list
+    return score_list
 
 
 
@@ -66,7 +69,7 @@ if __name__ == '__main__':
 
     time1 = time.time()
     for i in range(repeats):
-        list_CART.append(CART_FLASH(data))
+        list_CART.append(CART_FLASH(data, metrics=0))
     run_time1 = str(time.time() - time1)
 
     flat_list = np.array(list_CART).flatten()
